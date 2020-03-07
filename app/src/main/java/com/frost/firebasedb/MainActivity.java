@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements IBusAdapter {
             fetchBuses();
         });
 
+        binding.imgProfile.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        });
+
         fetchBuses();
     }
 
@@ -95,6 +99,13 @@ public class MainActivity extends AppCompatActivity implements IBusAdapter {
     @Override
     public void onClickBus(Bus bus, int position) {
         Intent intent = new Intent(this, CreateBusActivity.class);
+        intent.putExtra("Bus", bus);
+        startActivity(intent);
+    }
+
+    @Override
+    public void viewLocation(Bus bus, int position) {
+        Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra("Bus", bus);
         startActivity(intent);
     }

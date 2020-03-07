@@ -43,10 +43,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void setUp() {
 
-        binding.etName.setText("Gokul Kalagara");
-        binding.etEmail.setText("gokulkalagara@gmail.com");
-        binding.etMobile.setText("7207824353");
-        binding.etPassword.setText("123456");
+//        binding.etName.setText("Gokul Kalagara");
+//        binding.etEmail.setText("gokulkalagara@gmail.com");
+//        binding.etMobile.setText("7207824353");
+//        binding.etPassword.setText("123456");
 
         binding.imgClose.setOnClickListener(v -> {
             onBackPressed();

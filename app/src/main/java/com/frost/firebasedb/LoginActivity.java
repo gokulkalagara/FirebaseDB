@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setUp() {
 
-        binding.etEmail.setText("gokulkalagara@gmail.com");
-        binding.etPassword.setText("123456");
+//        binding.etEmail.setText("gokulkalagara@gmail.com");
+//        binding.etPassword.setText("123456");
 
         binding.tvLogin.setOnClickListener(v -> {
             if (doValidation()) {
@@ -67,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                     showLoader(false);
                     if (task.isSuccessful()) {
                         Utility.showSnackBar(LoginActivity.this, binding.getRoot(), "Successfully user login", 1);
+                        gotoHome();
                     } else {
                         task.getException().printStackTrace();
                         Utility.showSnackBar(LoginActivity.this, binding.getRoot(), "Authentication Failed, may be invalid username or password", 0);

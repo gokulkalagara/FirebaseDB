@@ -9,4 +9,6 @@ import com.frost.firebasedb.models.Bus;
  */
 public interface IBusAdapter {
     public void onClickBus(Bus bus, int position);
+
+    public void viewLocation(Bus bus, int position);
 }

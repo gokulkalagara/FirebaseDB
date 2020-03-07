@@ -47,6 +47,9 @@ public class BusAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             busViewHolder.itemView.setOnClickListener(v -> {
                 iBusAdapter.onClickBus(busList.get(position), position);
             });
+            busViewHolder.binding.llLocation.setOnClickListener(v -> {
+                iBusAdapter.viewLocation(busList.get(position), position);
+            });
         }
     }
 
