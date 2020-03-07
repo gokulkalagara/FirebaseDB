@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        tools:context=".CreateBusActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="@color/white"
+            android:elevation="5dp"
+            android:gravity="center_vertical">
+
+
+            <ImageView
+                android:id="@+id/imgClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_arrow_back_black_24dp">
+
+            </ImageView>
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Create Bus"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="normal">
+
+            </TextView>
+
+            <ImageView
+                android:id="@+id/imgDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/other_red"
+                android:visibility="gone">
+
+            </ImageView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="35dp">
+
+
+            <EditText
+                android:id="@+id/etBusName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corner_5"
+                android:drawableRight="@drawable/ic_directions_bus_black_24dp"
+                android:drawableTint="@color/light_gray"
+                android:hint="Bus Name"
+                android:inputType="textCapWords"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="15sp">
+
+            </EditText>
+
+
+            <EditText
+                android:id="@+id/etBusNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/rounded_corner_5"
+                android:drawableRight="@drawable/ic_crop_7_5"
+                android:drawableTint="@color/light_gray"
+                android:hint="Registartion Number"
+                android:inputType="textCapCharacters"
+                android:maxLines="1"
+                android:padding="10dp"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="15sp">
+
+            </EditText>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Active">
+
+                </RadioButton>
+
+                <RadioButton
+                    android:id="@+id/rbInActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="In-Active">
+
+                </RadioButton>
+            </RadioGroup>
+
+
+            <TextView
+                android:id="@+id/tvCreate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/rounded_corner_5"
+                android:backgroundTint="@color/button_green"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Create"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="10dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/new_primary_blue"
+                android:visibility="gone">
+
+            </ProgressBar>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

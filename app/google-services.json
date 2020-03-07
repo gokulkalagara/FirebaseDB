@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "875444079536",
+    "firebase_url": "https://fir-db-f7d34.firebaseio.com",
+    "project_id": "fir-db-f7d34",
+    "storage_bucket": "fir-db-f7d34.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:875444079536:android:d205957cf6e0d243e9e475",
+        "android_client_info": {
+          "package_name": "com.frost.firebasedb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "875444079536-imlbibgr681739dnp2pn8bb1oabce9n3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuZIpqe68pD2AljChBtYI5rUyye8rE1hQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "875444079536-imlbibgr681739dnp2pn8bb1oabce9n3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
