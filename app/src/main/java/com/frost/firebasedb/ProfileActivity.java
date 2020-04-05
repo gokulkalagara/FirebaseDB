@@ -63,6 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         binding.llLogout.setOnClickListener(v -> {
             firebaseAuth.signOut();
+            Utility.deleteAll(ProfileActivity.this);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -80,6 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateDetails(User user) {
+        Utility.saveString("userType", user.getType(), this);
         binding.tvEmail.setText(user.getEmail());
         binding.tvName.setText(user.getFullName());
         binding.tvShortName.setText(("" + user.getFullName().charAt(0)).toUpperCase());

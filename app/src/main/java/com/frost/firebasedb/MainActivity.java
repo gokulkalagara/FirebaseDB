@@ -1,8 +1,12 @@
 package com.frost.firebasedb;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
@@ -12,6 +16,9 @@ import android.view.View;
 
 import com.frost.firebasedb.adapters.BusAdapter;
 import com.frost.firebasedb.databinding.ActivityMainBinding;
+import com.frost.firebasedb.fragments.AdminsFragment;
+import com.frost.firebasedb.fragments.BusesFragment;
+import com.frost.firebasedb.fragments.DriversFragment;
 import com.frost.firebasedb.interfaces.IBusAdapter;
 import com.frost.firebasedb.models.Bus;
 import com.frost.firebasedb.models.Location;
@@ -28,70 +35,42 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements IBusAdapter {
 
     private ActivityMainBinding binding;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference busesReference;
-    private List<Bus> busList;
-    private BusAdapter busAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        setUpFireBaseDatabase();
         setUp();
-    }
-
-    private void setUpFireBaseDatabase() {
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        busesReference = firebaseDatabase.getReference("buses");
-
-
     }
 
 
     private void setUp() {
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.viewPager.setOffscreenPageLimit(3);
+        binding.tabLayout.setupWithViewPager(binding.viewPager);
+        binding.viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+
         binding.fabAdd.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, CreateBusActivity.class));
+            switch (binding.viewPager.getCurrentItem()) {
+                case 0: // BUS
+                    startActivity(new Intent(MainActivity.this, CreateBusActivity.class));
+                    break;
+                case 1: // DRIVER
+                    startActivity(new Intent(MainActivity.this, CreateDriverActivity.class));
+                    break;
+                case 2: // DRIVER
+                    startActivity(new Intent(MainActivity.this, CreateAdminActivity.class));
+                    break;
+
+            }
         });
 
-
-        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
-            fetchBuses();
-        });
 
         binding.imgProfile.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         });
-
-        fetchBuses();
-    }
-
-    private void fetchBuses() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-        busesReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                busList = new ArrayList<>();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Bus bus = postSnapshot.getValue(Bus.class);
-                    bus.setBusId(postSnapshot.getKey());
-                    busList.add(bus);
-                }
-                binding.progressBar.setVisibility(View.GONE);
-                binding.swipeRefreshLayout.setRefreshing(false);
-                binding.recyclerView.setAdapter(busAdapter = new BusAdapter(busList, MainActivity.this));
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
 
     }
 
@@ -108,5 +87,43 @@ public class MainActivity extends AppCompatActivity implements IBusAdapter {
         Intent intent = new Intent(this, LocationActivity.class);
         intent.putExtra("Bus", bus);
         startActivity(intent);
+    }
+
+
+    public class ViewPagerAdapter extends FragmentPagerAdapter {
+
+
+        public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position) {
+                case 0:
+                    fragment = BusesFragment.newInstance(null, null);
+                    break;
+                case 1:
+                    fragment = DriversFragment.newInstance(null, null);
+                    break;
+                case 2:
+                    fragment = AdminsFragment.newInstance(null, null);
+                    break;
+            }
+            return fragment;
+        }
+
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return position == 0 ? "Buses" : (position == 1 ? "Drivers" : "Admins");
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
     }
 }

@@ -52,7 +52,8 @@
     <color name="light_other_gray">#DFDFE4</color>
     ​
     ​
-    <color name="light_primary">#848FD6</color>
+    <color name="dark_green">#009688</color>
+    <color name="yellow">#FFC107</color>
     <color name="light_started">#84D688</color>
     <color name="light_pink">#B2567E</color>
     <color name="light_violet">#5D5386</color>

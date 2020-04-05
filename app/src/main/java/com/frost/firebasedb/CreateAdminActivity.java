@@ -7,25 +7,26 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.frost.firebasedb.databinding.ActivityCreateAdminBinding;
 import com.frost.firebasedb.databinding.ActivitySignUpBinding;
 import com.frost.firebasedb.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class SignUpActivity extends AppCompatActivity {
+public class CreateAdminActivity extends AppCompatActivity {
 
-    private ActivitySignUpBinding binding;
+    private ActivityCreateAdminBinding binding;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference usersReference;
     private User user;
-    private String type = "STUDENT";
+    private String type = "ADMIN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_admin);
         setFireBaseAuth();
         setFireBaseDatabase();
         setUp();
@@ -108,9 +109,9 @@ public class SignUpActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 usersReference.child(task.getResult().getUser().getUid()).setValue(user).addOnCompleteListener(this, addTask -> {
                     if (task.isSuccessful()) {
-                        FirebaseAuth.getInstance().signOut();
-                        Utility.showSnackBar(SignUpActivity.this, binding.getRoot(), "Successfully user registered", 1);
+                        Utility.showSnackBar(CreateAdminActivity.this, binding.getRoot(), "Successfully admin created", 1);
                         showLoader(false);
+                        getExistingUser();
                     } else {
                         task.getException().printStackTrace();
                         showLoader(false);
@@ -119,7 +120,7 @@ public class SignUpActivity extends AppCompatActivity {
             } else {
                 showLoader(false);
                 task.getException().printStackTrace();
-                Utility.showSnackBar(SignUpActivity.this, binding.getRoot(), "Failed to register: " + task.getException().getMessage(), 0);
+                Utility.showSnackBar(CreateAdminActivity.this, binding.getRoot(), "Failed to register: " + task.getException().getMessage(), 0);
             }
         });
     }
@@ -128,5 +129,20 @@ public class SignUpActivity extends AppCompatActivity {
     private void showLoader(boolean show) {
         binding.progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         binding.tvSignUp.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+
+    public void getExistingUser() {
+        showLoader(true);
+        firebaseAuth.signInWithEmailAndPassword(Utility.getString("userName", this), Utility.getString("password", this))
+                .addOnCompleteListener(this, task -> {
+                    showLoader(false);
+                    if (task.isSuccessful()) {
+                        onBackPressed();
+                    } else {
+                        task.getException().printStackTrace();
+                    }
+
+                });
     }
 }

@@ -2,6 +2,7 @@ package com.frost.firebasedb;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Patterns;
@@ -24,6 +25,7 @@ import java.util.TimeZone;
  */
 public class Utility {
 
+    private static final String APP_SHARED_PREFERENCES = "storage_db";
 
     public static boolean isNetworkAvailable(Context context) {
         try {
@@ -93,5 +95,32 @@ public class Utility {
     public static int dpSize(Context context, int sizeInDp) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (sizeInDp * scale + 0.5f);
+    }
+
+
+    public static void saveString(String key, String value, Context context) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putString(key, value);
+        editor.apply();
+        editor.commit();
+    }
+
+    public static String getString(String key, Context context) {
+        return getSharedPreferences(context).getString(key, null);
+    }
+
+    public static SharedPreferences getSharedPreferences(Context context) {
+        return context.getSharedPreferences(APP_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+    }
+
+    public static SharedPreferences.Editor getEditor(Context context) {
+        return getSharedPreferences(context).edit();
+    }
+
+
+    public static void deleteAll(Context context) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.clear().apply();
+        editor.commit();
     }
 }

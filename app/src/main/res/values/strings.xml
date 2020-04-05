@@ -1,4 +1,7 @@
 <resources>
-    <string name="app_name">FirebaseDB</string>
+    <string name="app_name">My Bus</string>
     <string name="google_key">AIzaSyAuZIpqe68pD2AljChBtYI5rUyye8rE1hQ</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

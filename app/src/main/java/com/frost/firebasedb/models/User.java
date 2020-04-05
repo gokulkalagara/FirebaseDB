@@ -15,6 +15,12 @@ public class User {
 
     private String password;
 
+    private String type;
+
+    public String id;
+
+    public long busId;
+
     public String getFullName() {
         return fullName;
     }
@@ -45,5 +51,29 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public long getBusId() {
+        return busId;
+    }
+
+    public void setBusId(long busId) {
+        this.busId = busId;
     }
 }

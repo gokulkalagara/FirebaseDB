@@ -7,94 +7,94 @@
 
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
-
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="@color/white"
-            android:elevation="5dp"
-            android:gravity="center_vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
 
 
-            <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:background="@color/white"
+                android:gravity="center_vertical">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:text="Admin Portal"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="normal">
+
+                </TextView>
+
+                <ImageView
+                    android:id="@+id/imgProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_account_circle_black_24dp"
+                    android:tint="@color/light_gray">
+
+                </ImageView>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_weight="1"
-                android:text="Home"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="normal">
+                android:orientation="vertical">
 
-            </TextView>
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:elevation="5dp"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/black"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabSelectedTextColor="@color/black"
+                    app:tabTextAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                    app:tabTextColor="@color/gray">
 
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_account_circle_black_24dp"
-                android:tint="@color/light_gray">
+                </com.google.android.material.tabs.TabLayout>
 
-            </ImageView>
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </androidx.viewpager.widget.ViewPager>
+
+            </LinearLayout>
 
         </LinearLayout>
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="15dp"
+            android:foregroundGravity="center"
+            android:src="@drawable/ic_add_black_24dp"
+            android:tint="@color/white"
+            app:backgroundTint="@color/new_primary_blue">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefreshLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </androidx.recyclerview.widget.RecyclerView>
-
-
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="15dp"
-                android:foregroundGravity="center"
-                android:src="@drawable/ic_add_black_24dp"
-                android:tint="@color/white"
-                app:backgroundTint="@color/new_primary_blue">
-
-            </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/new_primary_blue"
-                android:visibility="gone">
-
-            </ProgressBar>
-        </RelativeLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

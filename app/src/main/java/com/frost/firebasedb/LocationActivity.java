@@ -79,6 +79,11 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     private void setUp() {
+        if (!Utility.getString("userType", this).equals("ADMIN")) {
+            binding.llNewLocation.setVisibility(View.GONE);
+            binding.tvAddNewLocation.setVisibility(View.GONE);
+        }
+
         binding.tvAddNewLocation.setOnClickListener(v -> {
             binding.llNewLocation.setVisibility(View.VISIBLE);
             binding.rlLoader.setVisibility(View.VISIBLE);
@@ -126,9 +131,10 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         if (ContextCompat.checkSelfPermission(LocationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             this.googleMap.setMyLocationEnabled(true);
 
+        if (bus != null)
+            binding.tvTitle.setText(bus.getName() + " Location");
 
         if (bus != null && bus.getCurrent() != null) {
-            binding.tvTitle.setText(bus.getName() + " Location");
             addBusMarker(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()));
             zoomToPosition(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()), 15);
         } else {
