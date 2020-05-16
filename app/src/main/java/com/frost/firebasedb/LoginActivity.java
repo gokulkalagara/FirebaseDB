@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
 
             gotoHome(Utility.getString("userType", this));
+            return;
         }
     }
 
@@ -111,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         usersReference.child(firebaseAuth.getCurrentUser().getUid()).getRef().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersReference.removeEventListener(this);
                 if (dataSnapshot.exists()) {
                     showLoader(false);
                     User user = dataSnapshot.getValue(User.class);

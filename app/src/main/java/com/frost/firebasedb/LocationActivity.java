@@ -1,12 +1,5 @@
 package com.frost.firebasedb;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -19,11 +12,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+
 import com.frost.firebasedb.databinding.ActivityLocationBinding;
 import com.frost.firebasedb.models.Bus;
 import com.frost.firebasedb.models.Location;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -40,16 +39,21 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LocationActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private ActivityLocationBinding binding;
     private GoogleMap googleMap;
     private Bus bus;
-    private Marker busMarker;
+    private Marker busMarker, startPinMarker, endPinMarker;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference busesReference;
 
@@ -93,6 +97,9 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
 
+        updateLocationListener();
+
+
         binding.tvUpdate.setOnClickListener(v -> {
 
             if (!Utility.isNetworkAvailable(LocationActivity.this)) {
@@ -103,15 +110,15 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
             bus.setCurrent(new Location(googleMap.getCameraPosition().target.latitude,
                     googleMap.getCameraPosition().target.longitude,
                     Utility.getUTCTime()));
-            busesReference.child(bus.getBusId()).setValue(bus).addOnCompleteListener(this, task -> {
+            busesReference.child(bus.getBusId()).setValue(bus).addOnCompleteListener(task -> {
                 showLoader(false);
                 if (task.isSuccessful()) {
                     Utility.showSnackBar(this, binding.getRoot(), "Location updated successfully", 1);
+                    finish();
                 } else {
                     task.getException().printStackTrace();
                     Utility.showSnackBar(this, binding.getRoot(), "Failed to update: " + task.getException().getMessage(), 1);
                 }
-
             });
 
 
@@ -136,7 +143,14 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
         if (bus != null && bus.getCurrent() != null) {
             addBusMarker(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()));
-            zoomToPosition(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()), 15);
+            if (bus.getStartPoint() != null)
+                addStartPinMarker(new LatLng(bus.getStartPoint().getLatitude(), bus.getStartPoint().getLongitude()), bus.getStartPoint().getLocationName());
+
+            if (bus.getEndPoint() != null)
+                addEndPinMarker(new LatLng(bus.getEndPoint().getLatitude(), bus.getEndPoint().getLongitude()), bus.getEndPoint().getLocationName());
+
+            zoomToPosition(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()), 18);
+
         } else {
             Toast.makeText(LocationActivity.this, "Location is not available", Toast.LENGTH_SHORT).show();
         }
@@ -157,6 +171,37 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         markerOptions.position(latLng);
         busMarker = googleMap.addMarker(markerOptions);
     }
+
+
+    public void addStartPinMarker(LatLng latLng, String title) {
+
+        if (startPinMarker != null) {
+            startPinMarker.setPosition(latLng);
+            return;
+        }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(getBitmapDescriptor(R.drawable.ic_source, 80, 80));
+        markerOptions.anchor(.5f, .5f);
+        markerOptions.position(latLng);
+        startPinMarker = googleMap.addMarker(markerOptions);
+        startPinMarker.setTitle(title);
+    }
+
+    public void addEndPinMarker(LatLng latLng, String title) {
+
+        if (endPinMarker != null) {
+            endPinMarker.setPosition(latLng);
+            return;
+        }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(getBitmapDescriptor(R.drawable.ic_destination, 80, 80));
+        markerOptions.anchor(.5f, .5f);
+        markerOptions.position(latLng);
+        endPinMarker = googleMap.addMarker(markerOptions);
+        endPinMarker.setTitle(title);
+
+    }
+
 
     private BitmapDescriptor getBitmapDescriptor(int id, int right, int bottom) {
         Drawable vectorDrawable = ContextCompat.getDrawable(this, id);
@@ -260,6 +305,35 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
 
+    }
+
+
+    public void updateLocationListener() {
+
+        busesReference.child(bus.getBusId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Bus bus = dataSnapshot.getValue(Bus.class);
+                if (bus != null) {
+                    if (googleMap != null && bus.getCurrent() != null) {
+                        addBusMarker(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()));
+                        if (bus.getStartPoint() != null)
+                            addStartPinMarker(new LatLng(bus.getStartPoint().getLatitude(), bus.getStartPoint().getLongitude()), bus.getStartPoint().getLocationName());
+
+                        if (bus.getEndPoint() != null)
+                            addEndPinMarker(new LatLng(bus.getEndPoint().getLatitude(), bus.getEndPoint().getLongitude()), bus.getEndPoint().getLocationName());
+
+
+                        zoomToPosition(new LatLng(bus.getCurrent().getLatitude(), bus.getCurrent().getLongitude()), 18);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 

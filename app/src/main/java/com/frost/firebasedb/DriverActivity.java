@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.frost.firebasedb.databinding.ActivityDriverBinding;
 import com.frost.firebasedb.models.Bus;
+import com.frost.firebasedb.models.RideLog;
 import com.frost.firebasedb.models.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.ApiException;
@@ -68,7 +69,9 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
     private DatabaseReference driverReference;
     private User user;
     private Bus bus;
-    private Marker busMarker;
+    private Marker busMarker, startPinMarker, endPinMarker;
+    private RideLog rideLog;
+    private String rideLogId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +111,9 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
                 builder.setMessage("Do you want " + (bus.isStatus() ? "Stop" : "Start") + " the ride?");
                 builder.setPositiveButton("Yes", (dialog, which) -> {
                     dialog.dismiss();
-
                     bus.setStatus(!bus.isStatus());
                     binding.imgAction.setImageResource(bus.isStatus() ? R.drawable.ic_stop_black_24dp : R.drawable.ic_record);
+                    updateRideLog(bus.isStatus());
 
                     if (!bus.isStatus()) {
                         stopLocationUpdates();
@@ -142,6 +145,14 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
         if (ContextCompat.checkSelfPermission(DriverActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
             this.googleMap.setMyLocationEnabled(true);
 
+        if (bus != null) {
+            if (bus.getStartPoint() != null)
+                addStartPinMarker(new LatLng(bus.getStartPoint().getLatitude(), bus.getStartPoint().getLongitude()), bus.getStartPoint().getLocationName());
+
+            if (bus.getEndPoint() != null)
+                addEndPinMarker(new LatLng(bus.getEndPoint().getLatitude(), bus.getEndPoint().getLongitude()), bus.getEndPoint().getLocationName());
+
+        }
 
     }
 
@@ -324,6 +335,36 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
         busMarker = googleMap.addMarker(markerOptions);
     }
 
+
+    public void addStartPinMarker(LatLng latLng, String title) {
+
+        if (startPinMarker != null) {
+            startPinMarker.setPosition(latLng);
+            return;
+        }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(getBitmapDescriptor(R.drawable.ic_source, 80, 80));
+        markerOptions.anchor(.5f, .5f);
+        markerOptions.position(latLng);
+        startPinMarker = googleMap.addMarker(markerOptions);
+        startPinMarker.setTitle(title);
+    }
+
+    public void addEndPinMarker(LatLng latLng, String title) {
+
+        if (endPinMarker != null) {
+            endPinMarker.setPosition(latLng);
+            return;
+        }
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(getBitmapDescriptor(R.drawable.ic_destination, 80, 80));
+        markerOptions.anchor(.5f, .5f);
+        markerOptions.position(latLng);
+        endPinMarker = googleMap.addMarker(markerOptions);
+        endPinMarker.setTitle(title);
+
+    }
+
     private BitmapDescriptor getBitmapDescriptor(int id, int right, int bottom) {
         Drawable vectorDrawable = ContextCompat.getDrawable(this, id);
         vectorDrawable.setBounds(0, 0, right, bottom);
@@ -371,6 +412,8 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null)
                         getBusDetails(user);
+
+
                 }
             }
 
@@ -408,8 +451,15 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
                             binding.imgAction.setVisibility(View.VISIBLE);
                             binding.imgAction.setImageResource(bus.isStatus() ? R.drawable.ic_stop_black_24dp : R.drawable.ic_record);
                             if (bus.isStatus()) {
+                                getLastRideLogDetails();
                                 Toast.makeText(DriverActivity.this, "Updating the bus location", Toast.LENGTH_SHORT).show();
                             }
+
+                            if (bus.getStartPoint() != null)
+                                addStartPinMarker(new LatLng(bus.getStartPoint().getLatitude(), bus.getStartPoint().getLongitude()), bus.getStartPoint().getLocationName());
+
+                            if (bus.getEndPoint() != null)
+                                addEndPinMarker(new LatLng(bus.getEndPoint().getLatitude(), bus.getEndPoint().getLongitude()), bus.getEndPoint().getLocationName());
 
                         }
                     }
@@ -461,4 +511,53 @@ public class DriverActivity extends AppCompatActivity implements OnMapReadyCallb
         });
     }
 
+
+    private void updateRideLog(boolean start) {
+        if (start) {
+            rideLog = new RideLog();
+            rideLog.setBusId(bus.getBusId());
+            rideLog.setBusName(bus.getName());
+            rideLog.setStartTime(Utility.getCurrentDate() + " " + Utility.getCurrentTime());
+            driverReference.child(FirebaseAuth.getInstance().getUid()).child("rideLogs").child(rideLogId = "" + System.currentTimeMillis()).setValue(rideLog);
+        } else {
+            if (rideLogId == null)
+                return;
+            if (rideLog == null)
+                return;
+            rideLog.setBusId(bus.getBusId());
+            rideLog.setBusName(bus.getName());
+            rideLog.setEndTime(Utility.getCurrentDate() + " " + Utility.getCurrentTime());
+            driverReference.child(FirebaseAuth.getInstance().getUid()).child("rideLogs").child(rideLogId).setValue(rideLog);
+
+
+        }
+    }
+
+
+    private void getLastRideLogDetails() {
+        driverReference.child(FirebaseAuth.getInstance().getUid())
+                .child("rideLogs").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    rideLog = postSnapshot.getValue(RideLog.class);
+                    rideLogId = postSnapshot.getKey();
+                }
+                if (rideLog == null) {
+                    rideLogId = "" + System.currentTimeMillis();
+                    rideLog = new RideLog();
+                    rideLog.setStartTime(Utility.getCurrentDate() + " " + Utility.getCurrentTime());
+                }
+
+                driverReference.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 }

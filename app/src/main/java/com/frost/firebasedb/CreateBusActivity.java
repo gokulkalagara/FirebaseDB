@@ -10,21 +10,24 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.frost.firebasedb.bsd.BSDLocationPinFragment;
 import com.frost.firebasedb.databinding.ActivityCreateBusBinding;
 import com.frost.firebasedb.models.Bus;
+import com.frost.firebasedb.models.PinPoint;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class CreateBusActivity extends AppCompatActivity {
+public class CreateBusActivity extends AppCompatActivity implements BSDLocationPinFragment.IBSDLocationPinFragment {
 
     private ActivityCreateBusBinding binding;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference busesReference;
     private long id;
     private Bus bus;
+    private PinPoint startPoint, endPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +73,32 @@ public class CreateBusActivity extends AppCompatActivity {
             binding.rbInActive.setChecked(!bus.isStatus());
             binding.tvCreate.setText("Update");
             binding.imgDelete.setVisibility(View.VISIBLE);
+            startPoint = bus.getStartPoint();
+            endPoint = bus.getEndPoint();
+
+            if (startPoint != null)
+                binding.tvStartPoint.setText(startPoint.getLocationName());
+
+            if (endPoint != null)
+                binding.tvEndPoint.setText(endPoint.getLocationName());
+
         }
         binding.imgClose.setOnClickListener(v -> {
             onBackPressed();
+        });
+
+
+        binding.tvStartPoint.setOnClickListener(v -> {
+            BSDLocationPinFragment bsdLocationPinFragment = new BSDLocationPinFragment(startPoint, true, this);
+            bsdLocationPinFragment.setCancelable(false);
+            bsdLocationPinFragment.show(getSupportFragmentManager(), "BSDLocationPinFragment");
+        });
+
+
+        binding.tvEndPoint.setOnClickListener(v -> {
+            BSDLocationPinFragment bsdLocationPinFragment = new BSDLocationPinFragment(endPoint, false, this);
+            bsdLocationPinFragment.setCancelable(false);
+            bsdLocationPinFragment.show(getSupportFragmentManager(), "BSDLocationPinFragment");
         });
 
 
@@ -117,6 +143,7 @@ public class CreateBusActivity extends AppCompatActivity {
 
             String key = bus.getBusId();
             bus.setBusId(null);
+
             busesReference.child(key).setValue(bus).addOnCompleteListener(this, task -> {
 
                 showLoader(false);
@@ -178,6 +205,14 @@ public class CreateBusActivity extends AppCompatActivity {
             Utility.showSnackBar(this, binding.getRoot(), "Please check internet connection", 2);
             return false;
         }
+        if (startPoint == null) {
+            Utility.showSnackBar(this, binding.getRoot(), "Start point should not be empty", 2);
+            return false;
+        }
+        if (endPoint == null) {
+            Utility.showSnackBar(this, binding.getRoot(), "End point should not be empty", 2);
+            return false;
+        }
         if (bus == null) {
             bus = new Bus(binding.etBusName.getText().toString(),
                     binding.etBusNumber.getText().toString(),
@@ -187,6 +222,9 @@ public class CreateBusActivity extends AppCompatActivity {
             bus.setRegistrationNumber(binding.etBusNumber.getText().toString());
             bus.setStatus(binding.rbActive.isChecked());
         }
+
+        bus.setStartPoint(startPoint);
+        bus.setEndPoint(endPoint);
         return true;
     }
 
@@ -194,5 +232,16 @@ public class CreateBusActivity extends AppCompatActivity {
     private void showLoader(boolean show) {
         binding.progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         binding.tvCreate.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void updatePinPoint(boolean start, PinPoint pinPoint) {
+        if (start) {
+            this.startPoint = pinPoint;
+            binding.tvStartPoint.setText(startPoint.getLocationName());
+        } else {
+            this.endPoint = pinPoint;
+            binding.tvEndPoint.setText(endPoint.getLocationName());
+        }
     }
 }

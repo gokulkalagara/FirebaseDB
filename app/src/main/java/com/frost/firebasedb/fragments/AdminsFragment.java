@@ -127,7 +127,7 @@ public class AdminsFragment extends Fragment implements IAdminAdapter {
                 }
                 binding.progressBar.setVisibility(View.GONE);
                 binding.swipeRefreshLayout.setRefreshing(false);
-                binding.recyclerView.setAdapter(adminsAdapter = new AdminsAdapter(userList, AdminsFragment.this));
+                binding.recyclerView.setAdapter(adminsAdapter = new AdminsAdapter(userList, AdminsFragment.this, false));
 
             }
 
@@ -186,5 +186,10 @@ public class AdminsFragment extends Fragment implements IAdminAdapter {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + user.getMobileNumber()));
         startActivity(intent);
+    }
+
+    @Override
+    public void openRideLogs(User user, int position) {
+
     }
 }

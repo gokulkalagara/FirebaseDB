@@ -14,16 +14,38 @@
         android:orientation="vertical"
         android:padding="15dp">
 
-        <TextView
-            android:id="@+id/tvAdminName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Garuda"
-            android:textColor="@color/charcoal_gray"
-            android:textSize="18sp"
-            android:textStyle="bold">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        </TextView>
+            <TextView
+                android:id="@+id/tvAdminName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Garuda"
+                android:textColor="@color/charcoal_gray"
+                android:textSize="18sp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tvRideLogs"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="View ride logs"
+                android:textColor="@color/new_primary_blue"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:visibility="gone">
+
+            </TextView>
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

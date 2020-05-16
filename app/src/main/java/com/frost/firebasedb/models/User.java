@@ -1,5 +1,12 @@
 package com.frost.firebasedb.models;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
+import java.util.List;
+
 /**
  * Created by Gokul Kalagara (Mr. Pyscho) on 07-03-2020.
  * <p>
@@ -20,6 +27,7 @@ public class User {
     public String id;
 
     public long busId;
+
 
     public String getFullName() {
         return fullName;
@@ -76,4 +84,5 @@ public class User {
     public void setBusId(long busId) {
         this.busId = busId;
     }
+
 }

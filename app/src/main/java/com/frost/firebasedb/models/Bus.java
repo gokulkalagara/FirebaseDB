@@ -4,8 +4,6 @@ package com.frost.firebasedb.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
  * Created by Gokul Kalagara (Mr. Pyscho) on 07-03-2020.
  * <p>
@@ -21,6 +19,11 @@ public class Bus implements Parcelable {
     private boolean status;
 
     private Location current;
+
+    private PinPoint startPoint;
+
+    private PinPoint endPoint;
+
 
     public Bus() {
 
@@ -38,6 +41,8 @@ public class Bus implements Parcelable {
         registrationNumber = in.readString();
         status = in.readByte() != 0;
         current = in.readParcelable(Location.class.getClassLoader());
+        startPoint = in.readParcelable(PinPoint.class.getClassLoader());
+        endPoint = in.readParcelable(PinPoint.class.getClassLoader());
     }
 
     @Override
@@ -47,6 +52,8 @@ public class Bus implements Parcelable {
         dest.writeString(registrationNumber);
         dest.writeByte((byte) (status ? 1 : 0));
         dest.writeParcelable(current, flags);
+        dest.writeParcelable(startPoint, flags);
+        dest.writeParcelable(endPoint, flags);
     }
 
     @Override
@@ -106,4 +113,19 @@ public class Bus implements Parcelable {
         this.current = current;
     }
 
+    public PinPoint getStartPoint() {
+        return startPoint;
+    }
+
+    public void setStartPoint(PinPoint startPoint) {
+        this.startPoint = startPoint;
+    }
+
+    public PinPoint getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(PinPoint endPoint) {
+        this.endPoint = endPoint;
+    }
 }

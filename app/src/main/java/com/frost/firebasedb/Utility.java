@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -122,5 +123,19 @@ public class Utility {
         SharedPreferences.Editor editor = getEditor(context);
         editor.clear().apply();
         editor.commit();
+    }
+
+
+    public static String getCurrentDate() {
+
+        String date = new SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault()).format(new Date());
+
+        return date;
+    }
+
+    public static String getCurrentTime() {
+        String time = new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date());
+
+        return time;
     }
 }

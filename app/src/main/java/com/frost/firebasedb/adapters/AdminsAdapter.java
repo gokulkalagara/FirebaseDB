@@ -22,11 +22,13 @@ public class AdminsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<User> userList;
     private IAdminAdapter iAdminAdapter;
+    private boolean driver;
 
 
-    public AdminsAdapter(List<User> userList, IAdminAdapter iAdminAdapter) {
+    public AdminsAdapter(List<User> userList, IAdminAdapter iAdminAdapter, boolean driver) {
         this.userList = userList;
         this.iAdminAdapter = iAdminAdapter;
+        this.driver = driver;
     }
 
     @Override
@@ -45,6 +47,10 @@ public class AdminsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
             adminViewHolder.binding.llCall.setOnClickListener(v -> {
                 iAdminAdapter.doCall(userList.get(position), position);
+            });
+
+            adminViewHolder.binding.tvRideLogs.setOnClickListener(v -> {
+                iAdminAdapter.openRideLogs(userList.get(position), position);
             });
         }
     }
@@ -66,7 +72,7 @@ public class AdminsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public void bindData(User user, int position) {
             binding.tvAdminName.setText(user.getFullName());
             binding.tvNumber.setText(user.getMobileNumber());
-
+            binding.tvRideLogs.setVisibility(driver ? View.VISIBLE : View.GONE);
             binding.tvDelete.setVisibility(FirebaseAuth.getInstance().getCurrentUser().getUid().equals(user.id) ? View.GONE : View.VISIBLE);
 
 

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/app_background_color"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.google.android.gms.maps.MapView>
+
+            <RelativeLayout
+                android:id="@+id/rlLoader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="visible">
+
+                <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    style="@style/SpinKitView.Small.Pulse"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center"
+                    android:padding="8dp"
+                    app:SpinKit_Color="@color/new_primary_blue" />
+
+
+                <ImageView
+                    android:id="@+id/imgMarker"
+                    android:layout_width="11dp"
+                    android:layout_height="11dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/circle_white"
+                    android:padding="0.5dp"
+                    android:src="@drawable/circle_white"
+                    android:tint="@color/new_primary_blue" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/imgClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="15dp"
+                android:background="@drawable/circle_white"
+                android:backgroundTint="#22000000"
+                android:padding="5dp"
+                android:src="@drawable/ic_arrow_back_black_24dp">
+
+            </ImageView>
+
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/etLocationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:background="@drawable/rounded_corner_5"
+            android:gravity="center_vertical"
+            android:hint="Location Name"
+            android:inputType="textCapWords"
+            android:padding="15dp"
+            android:textColor="@color/normal_text_color"
+            android:textSize="15sp">
+
+        </EditText>
+
+        <TextView
+            android:id="@+id/tvUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="45dp"
+            android:background="@drawable/rounded_corner_5"
+            android:backgroundTint="@color/new_primary_blue"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Add Point"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold">
+
+        </TextView>
+
+
+    </LinearLayout>
+</layout>

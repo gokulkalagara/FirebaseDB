@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import com.frost.firebasedb.R;
 import com.frost.firebasedb.Utility;
 import com.frost.firebasedb.adapters.AdminsAdapter;
+import com.frost.firebasedb.bsd.BSDLocationPinFragment;
+import com.frost.firebasedb.bsd.BsdRideLogFragment;
 import com.frost.firebasedb.databinding.FragmentDriversBinding;
 import com.frost.firebasedb.interfaces.IAdminAdapter;
 import com.frost.firebasedb.models.User;
@@ -125,7 +127,7 @@ public class DriversFragment extends Fragment implements IAdminAdapter {
                 }
                 binding.progressBar.setVisibility(View.GONE);
                 binding.swipeRefreshLayout.setRefreshing(false);
-                binding.recyclerView.setAdapter(adminsAdapter = new AdminsAdapter(userList, DriversFragment.this));
+                binding.recyclerView.setAdapter(adminsAdapter = new AdminsAdapter(userList, DriversFragment.this, true));
 
             }
 
@@ -184,5 +186,11 @@ public class DriversFragment extends Fragment implements IAdminAdapter {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + user.getMobileNumber()));
         startActivity(intent);
+    }
+
+    @Override
+    public void openRideLogs(User user, int position) {
+        BsdRideLogFragment bsdLocationPinFragment = new BsdRideLogFragment(user);
+        bsdLocationPinFragment.show(getChildFragmentManager(), "BsdRideLogFragment");
     }
 }
